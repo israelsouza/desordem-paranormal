@@ -3,7 +3,7 @@ import { WikiOp } from "../api/wiki-op";
 import type { Page } from "wikijs";
 
 export class WikiDataManipulationService {
-  public static async GetPagesByPageNames() {
+  public static async GetPages() {
     const pageNames = await WikiOp.GetPageNames();
 
     const allPagesRecord: Record<number, Page> = {};
@@ -22,11 +22,10 @@ export class WikiDataManipulationService {
 
       allPagesRecord[pages.raw.pageid] = pages;
     }
-
     return Object.entries(allPagesRecord);
   }
 
-  public static async GetPageConnections(htmlPage: string) {
+  public static async GetPageLinks(htmlPage: string) {
     const cheerioPage = cheerio.load(htmlPage ?? "");
     const links = cheerioPage("a").toArray();
     const allPagesRecord: Record<string, string> = {};
