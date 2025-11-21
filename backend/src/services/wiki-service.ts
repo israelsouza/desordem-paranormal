@@ -1,6 +1,8 @@
 import { Page as wikiPage } from "wikijs";
 import { WikiDataManipulationService } from "./wiki-data-manipulation-service";
 import { HtmlHasher } from "../utils/html-hasher";
+import { WikiRepository } from "../repository/wiki-repository";
+import { Request, Response } from "express";
 
 export interface Page {
   id: number;
@@ -9,6 +11,12 @@ export interface Page {
   html: string;
   connections?: number[];
 }
+
+export interface Connection {
+  originPage: number;
+  targetPage: number;
+}
+
 export class WikiService {
   public static async GetPages() {
     const pageRecords = await WikiDataManipulationService.GetPages();
@@ -36,26 +44,31 @@ export class WikiService {
       html: htmlHash,
     };
     allPagesObjects.push(pageObj);
+    WikiRepository.UpdatePage(pageObj);
   }
 
-  public static async GetConnections(htmlPage: string, allPages: Page[]) {
-    const connections: number[] = [];
-
+  public static async UpdateConnections(page: Page, allPages: Page[]) {
     const getPageConnections = await WikiDataManipulationService.GetPageLinks(
-      htmlPage
+      page.html
     );
 
     for (const entrie of getPageConnections) {
-      const pageObj = allPages.find((page) => {
+      const connection = allPages.find((page) => {
         return page.name == entrie[1];
       });
 
-      if (!pageObj) {
+      if (!connection) {
         continue;
       }
-      connections.push(pageObj.id);
+      WikiRepository.UpdateConnection({
+        originPage: page.id,
+        targetPage: connection.id,
+      });
     }
+  }
 
-    return connections;
+  public static async GetWiki(req: Request, res: Response) {
+    const wiki = await WikiRepository.GetWiki();
+    res.json(wiki);
   }
 }

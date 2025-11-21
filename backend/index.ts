@@ -11,8 +11,6 @@ export const db = drizzle(process.env.DB_FILE_NAME!);
 
 app.use(appRoutes);
 
-WikiService.GetPages();
-
 app.listen(port, () => {
   console.log(`a porta ${port} ta abrida !`);
 });

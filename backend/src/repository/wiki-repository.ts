@@ -1,22 +1,44 @@
-// public static async GetAllInfo() {
-//   // retornar um array de objetos com todas as páginas e suas conexões
+import { db } from "../../index";
+import { connection, page } from "../database/schemas";
+import { Connection, Page } from "../services/wiki-service";
 
-//   const allPages = await this.GetPagesObjs();
-//   const allPagesObjects: pagesObjInterface[] = [];
-//   if (!allPages) {
-//     throw new Error("deu erro no allPages");
-//   }
+export class WikiRepository {
+  public static async GetWiki() {
+    const pages = await db.select().from(page);
+    const connections = await db.select().from(connection);
 
-//   for (const page of allPages) {
-//     const connections = await this.GetPageConnections(page.html, allPages);
-//     const hash = new HtmlHasher().hasher(page.html);
+    return {
+      pages: pages,
+      connection: connections,
+    };
+  }
 
-//     allPagesObjects.push({
-//       id: page.id,
-//       name: page.name,
-//       html: hash,
-//       link: page.link,
-//       connections: connections,
-//     });
-//   }
-// }
+  public static async UpdatePage(Page: Page) {
+    await db
+      .insert(page)
+      .values({
+        id: Page.id,
+        name: Page.name,
+        link: Page.link,
+      })
+      .onConflictDoUpdate({
+        target: page.id,
+        set: { name: Page.name, link: Page.link },
+      });
+  }
+  public static async UpdateConnection(Connection: Connection) {
+    await db
+      .insert(connection)
+      .values({
+        targetPage: Connection.targetPage,
+        originPage: Connection.originPage,
+      })
+      .onConflictDoUpdate({
+        target: connection.id,
+        set: {
+          targetPage: Connection.targetPage,
+          originPage: Connection.originPage,
+        },
+      });
+  }
+}
