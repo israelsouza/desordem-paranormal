@@ -1,14 +1,13 @@
 import { Page as wikiPage } from "wikijs";
 import { WikiDataManipulationService } from "./wiki-data-manipulation-service";
-import { HtmlHasher } from "../utils/html-hasher";
 import { WikiRepository } from "../repository/wiki-repository";
-import { Request, Response } from "express";
 
 export interface Page {
   id: number;
   name: string;
   link: string;
   html: string;
+  categories: string[];
   connections?: number[];
 }
 
@@ -26,35 +25,55 @@ export class WikiService {
     }
 
     const allPagesObjects: Page[] = [];
-    for (const [pageid, page] of pageRecords) {
-      await WikiService.FormatPage(page, allPagesObjects);
+
+    while (pageRecords.length > 0) {
+      console.log("processing pages", pageRecords.length);
+      const pageBatch = pageRecords.splice(0, 30);
+
+      const pageBatchPromisse = pageBatch.map((page) => {
+        return WikiService.FormatPage(page[1]);
+      });
+
+      const formatedPages = await Promise.all(pageBatchPromisse);
+
+      const filteredPages = formatedPages.filter((page) => !!page);
+
+      await WikiRepository.UpdatePage(filteredPages);
+      allPagesObjects.push(...filteredPages);
     }
 
     return allPagesObjects;
   }
 
-  private static async FormatPage(page: wikiPage, allPagesObjects: Page[]) {
-    const html = await page.html();
+  private static async FormatPage(page: wikiPage) {
+    try {
+      const html = await page.html();
+      const categories = await page.categories();
+      const pageObj: Page = {
+        id: page.raw.pageid,
+        name: page.raw.title,
+        link: page.raw.fullurl,
+        categories,
+        html,
+      };
 
-    const pageObj: Page = {
-      id: page.raw.pageid,
-      name: page.raw.title,
-      link: page.raw.fullurl,
-      html,
-    };
-    console.log;
-    allPagesObjects.push(pageObj);
-    WikiRepository.UpdatePage(pageObj);
+      return pageObj;
+    } catch (error) {
+      console.log("erro no formatPage: ", error);
+    }
   }
 
   public static async UpdatePageConnections() {
-    console.log("chegou aqui");
     const allPages = await this.GetPages();
 
     for (const page of allPages) {
+      console.log("processing connections", allPages.length);
+
       const getPageConnections = await WikiDataManipulationService.GetPageLinks(
         page.html
       );
+
+      const connections: Connection[] = [];
 
       for (const entrie of getPageConnections) {
         const connection = allPages.find((page) => {
@@ -64,20 +83,17 @@ export class WikiService {
         if (!connection) {
           continue;
         }
-        console.log({
-          originPage: page.id,
-          targetPage: connection.id,
-        });
-        WikiRepository.UpdateConnection({
-          originPage: page.id,
-          targetPage: connection.id,
+        connections.push({
+          originPage: Math.max(page.id, connection.id),
+          targetPage: Math.min(page.id, connection.id),
         });
       }
+      await WikiRepository.UpdateConnection(connections);
     }
   }
 
-  public static async GetWiki(req: Request, res: Response) {
-    const wiki = await WikiRepository.GetWiki(req, res);
-    res.json(wiki);
+  public static async GetWiki() {
+    const wiki = await WikiRepository.GetWiki();
+    return wiki;
   }
 }
