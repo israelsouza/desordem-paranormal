@@ -1,9 +1,17 @@
-import { integer, jsonb, pgTable, primaryKey, text } from "drizzle-orm/pg-core";
+import {
+  integer,
+  jsonb,
+  pgTable,
+  primaryKey,
+  text,
+  vector,
+} from "drizzle-orm/pg-core";
 
 export const page = pgTable("page", {
   id: integer().primaryKey(),
   name: text().notNull(),
   link: text().notNull(),
+  embedding: vector({ dimensions: 768 }),
   categories: jsonb("categories").$type<string[]>(),
 });
 

@@ -1,6 +1,7 @@
 import { Page as wikiPage } from "wikijs";
 import { WikiDataManipulationService } from "./wiki-data-manipulation-service";
 import { WikiRepository } from "../repository/wiki-repository";
+import { SemanticSearchService } from "./semantic-search-service";
 
 export interface Page {
   id: number;
@@ -8,6 +9,7 @@ export interface Page {
   link: string;
   html: string;
   categories: string[];
+  embedding: number[];
   connections?: number[];
 }
 
@@ -48,11 +50,16 @@ export class WikiService {
   private static async FormatPage(page: wikiPage) {
     try {
       const html = await page.html();
+      const embedding = await SemanticSearchService.getVectorEmbedding(
+        html,
+        "passage"
+      );
       const categories = await page.categories();
       const pageObj: Page = {
         id: page.raw.pageid,
         name: page.raw.title,
         link: page.raw.fullurl,
+        embedding,
         categories,
         html,
       };

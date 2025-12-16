@@ -4,3 +4,7 @@ import { WikiController } from "../controller/get-wiki-controller.js";
 export const appRoutes = Router();
 
 appRoutes.get("/", (req, res) => () => WikiController.GetWiki(req, res));
+appRoutes.post(
+  "/search",
+  (req, res) => () => WikiController.SearchWiki(req, res)
+);

@@ -16,6 +16,8 @@ export class WikiRepository {
     };
   }
 
+  public static async ListPagebySimilarity() {}
+
   public static async UpdatePage(Pages: Page[]) {
     await db
       .insert(page)
@@ -26,6 +28,7 @@ export class WikiRepository {
           name: sql`excluded.name`,
           link: sql`excluded.link`,
           categories: sql`excluded.categories`,
+          embedding: sql`excluded.embedding`,
         },
       });
   }

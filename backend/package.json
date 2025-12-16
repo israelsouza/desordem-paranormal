@@ -12,6 +12,7 @@
     "update": "npx drizzle-kit push"
   },
   "dependencies": {
+    "@huggingface/transformers": "^3.8.1",
     "cheerio": "^1.1.2",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.7",
