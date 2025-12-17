@@ -6,9 +6,6 @@ import postgres from "postgres";
 import "./src/utils/cron-job.js";
 import { SemanticSearchService } from "./src/services/semantic-search-service.js";
 
-const client = postgres(process.env.DATABASE_URL!);
-export const db = drizzle({ client });
-
 async function main() {
   const app = express();
   const port = process.env.ENV_PORT;

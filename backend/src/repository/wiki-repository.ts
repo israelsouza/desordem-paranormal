@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
-import { db } from "../../index";
 import { connection, page } from "../database/schemas";
 import { Connection, Page } from "../services/wiki-service";
+import { db } from "../database";
 
 export class WikiRepository {
   public static async GetWiki() {

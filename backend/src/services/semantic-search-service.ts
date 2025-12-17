@@ -2,14 +2,17 @@ import { FeatureExtractionPipeline, pipeline } from "@huggingface/transformers";
 import { WikiRepository } from "../repository/wiki-repository";
 import { cosineDistance, gt, sql } from "drizzle-orm";
 import { page as pageSchema } from "../database/schemas";
+
 export class SemanticSearchService {
   private static featureExtractionPipeline: FeatureExtractionPipeline;
 
   public static async loadFeatureExtraction() {
     const extractor = await pipeline(
       "feature-extraction",
-      "intfloat/multilingual-e5-base"
+      "intfloat/multilingual-e5-base",
     );
+
+    console.log("pipelone loaded");
 
     this.featureExtractionPipeline = extractor;
   }

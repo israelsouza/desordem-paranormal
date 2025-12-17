@@ -2,6 +2,9 @@ import { Page as wikiPage } from "wikijs";
 import { WikiDataManipulationService } from "./wiki-data-manipulation-service";
 import { WikiRepository } from "../repository/wiki-repository";
 import { SemanticSearchService } from "./semantic-search-service";
+import { WikiOp } from "../api/wiki-op";
+import { normalizeText } from "../utils/formatter";
+import { constrainedMemory } from "process";
 
 export interface Page {
   id: number;
@@ -30,7 +33,7 @@ export class WikiService {
 
     while (pageRecords.length > 0) {
       console.log("processing pages", pageRecords.length);
-      const pageBatch = pageRecords.splice(0, 30);
+      const pageBatch = pageRecords.splice(0, 20);
 
       const pageBatchPromisse = pageBatch.map((page) => {
         return WikiService.FormatPage(page[1]);
@@ -40,6 +43,9 @@ export class WikiService {
 
       const filteredPages = formatedPages.filter((page) => !!page);
 
+      console.log("update page %i embeddings", filteredPages.length);
+
+      await this.UpdatePagesEmbeddings(filteredPages);
       await WikiRepository.UpdatePage(filteredPages);
       allPagesObjects.push(...filteredPages);
     }
@@ -49,24 +55,32 @@ export class WikiService {
 
   private static async FormatPage(page: wikiPage) {
     try {
-      const html = await page.html();
-      const embedding = await SemanticSearchService.getVectorEmbedding(
-        html,
-        "passage"
-      );
-      const categories = await page.categories();
+      const [wikiText, categories] = await Promise.all([
+        await WikiOp.getWikiText(page.raw.title),
+        await page.categories(),
+      ])
+    
+      if (!wikiText) return;
+      const cleanWikiText = normalizeText(wikiText);
+      
       const pageObj: Page = {
         id: page.raw.pageid,
         name: page.raw.title,
         link: page.raw.fullurl,
-        embedding,
+        embedding: [],
         categories,
-        html,
+        html: cleanWikiText,
       };
 
       return pageObj;
     } catch (error) {
       console.log("erro no formatPage: ", error);
+    }
+  }
+
+  private static async UpdatePagesEmbeddings(pages: Page[]) {
+    for (const page of pages) {
+      page.embedding = await SemanticSearchService.getVectorEmbedding(page.html, "passage");
     }
   }
 
