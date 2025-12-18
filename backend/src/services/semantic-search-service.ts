@@ -9,7 +9,7 @@ export class SemanticSearchService {
   public static async loadFeatureExtraction() {
     const extractor = await pipeline(
       "feature-extraction",
-      "intfloat/multilingual-e5-base",
+      "intfloat/multilingual-e5-base"
     );
 
     console.log("pipelone loaded");
@@ -17,9 +17,9 @@ export class SemanticSearchService {
     this.featureExtractionPipeline = extractor;
   }
 
-  public static async getVectorEmbedding(phrase: string, prefix: string) {
+  public static async getEmbedding(text: string, prefix: string) {
     const response = await this.featureExtractionPipeline(
-      `${prefix}: ${phrase}`,
+      `${prefix}: ${text}`,
       {
         pooling: "mean",
         normalize: true,
@@ -31,18 +31,11 @@ export class SemanticSearchService {
 
   public static async getPages() {
     const wiki = await WikiRepository.GetWiki();
-
     return wiki.pages;
   }
 
-  public static async compareEmbedding(userSearch: string) {
-    const search = await this.getVectorEmbedding(userSearch, "query");
-
-    const simlarity = sql<number>`1 - (${cosineDistance(
-      pageSchema.embedding,
-      search
-    )})`;
-
-    return simlarity;
+  public static async compareEmbedding(searchQuery: string) {
+    const embedding = await this.getEmbedding(searchQuery, "query");
+    return WikiRepository.ListPagebySimilarity(embedding);
   }
 }

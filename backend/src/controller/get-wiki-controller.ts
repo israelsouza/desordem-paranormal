@@ -10,7 +10,7 @@ export class WikiController {
 
   public static async SearchWiki(req: Request, res: Response) {
     const { search } = req.body;
-    SemanticSearchService.compareEmbedding(search);
-    res.json();
+    const response = await SemanticSearchService.compareEmbedding(search);
+    res.json(response);
   }
 }

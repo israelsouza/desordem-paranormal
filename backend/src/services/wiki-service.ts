@@ -58,11 +58,11 @@ export class WikiService {
       const [wikiText, categories] = await Promise.all([
         await WikiOp.getWikiText(page.raw.title),
         await page.categories(),
-      ])
-    
+      ]);
+
       if (!wikiText) return;
       const cleanWikiText = normalizeText(wikiText);
-      
+
       const pageObj: Page = {
         id: page.raw.pageid,
         name: page.raw.title,
@@ -80,7 +80,10 @@ export class WikiService {
 
   private static async UpdatePagesEmbeddings(pages: Page[]) {
     for (const page of pages) {
-      page.embedding = await SemanticSearchService.getVectorEmbedding(page.html, "passage");
+      page.embedding = await SemanticSearchService.getEmbedding(
+        page.html,
+        "passage"
+      );
     }
   }
 
