@@ -3,5 +3,6 @@ import { WikiController } from "../controller/get-wiki-controller.js";
 
 export const appRoutes = Router();
 
-appRoutes.get("/wiki", WikiController.GetWiki);
+appRoutes.get("/pages", WikiController.GetPages);
+appRoutes.get("/connections", WikiController.GetConnections);
 appRoutes.post("/search", WikiController.SearchWiki);

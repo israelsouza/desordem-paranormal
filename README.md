@@ -51,6 +51,32 @@ caminho: backend\src\routes\routes.ts
 
 caminho: backend\src\controller\get-wiki-controller.ts
 
-| GetWiki                          | SearchWiki                                                                                                                                |
-| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| Chama a service e retorna a Wiki | Recebe a pesquisa do usuário e passa ela para função da Service, retornará as páginas mais relevantes de acordo com a pesquisa do usuário |
+| Função     | Descrição                                                                                             |
+| ---------- | ----------------------------------------------------------------------------------------------------- |
+| GetWiki    | Faz a requisição na wiki service e retorna as páginas e as conexões                                   |
+| SearchWiki | Busca a pesquisa do usuário e envia para a sematic search service que retorna o resultado da pesquisa |
+
+#### Wiki Service
+
+caminho: backend\src\services\wiki-service.ts
+
+##### Função GetPages
+
+- Busca as paginas em Records vindas da função [GetPages](#função-getpages-1) da [wikiDataManipulationService](#wikidatamanipulationservice);
+- separa o processamento de 20 em 20 páginas enviando para o FormatPage;
+- envia as páginas já formatadas para: UpdatePagesEmbeddings, para o UpdatePage do repositório e para um array chamado allPagesObjects;
+- retorna o array do allPagesObjects;
+
+##### Função FormatPages
+
+- recebe uma página
+- busca na getWikiText o texto da página específica, e as categorias daquela página
+- limpa o texto da página retirando alguns espaços / caracteres
+
+#### WikiDataManipulationService
+
+caminho: backend\src\services\wiki-data-manipulation-service.ts
+
+##### Função GetPages
+
+Busca da API

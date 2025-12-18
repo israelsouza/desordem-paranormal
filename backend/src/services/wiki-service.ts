@@ -4,7 +4,6 @@ import { WikiRepository } from "../repository/wiki-repository";
 import { SemanticSearchService } from "./semantic-search-service";
 import { WikiOp } from "../api/wiki-op";
 import { normalizeText } from "../utils/formatter";
-import { constrainedMemory } from "process";
 
 export interface Page {
   id: number;
@@ -116,8 +115,13 @@ export class WikiService {
     }
   }
 
-  public static async GetWiki() {
-    const wiki = await WikiRepository.GetWiki();
-    return wiki;
+  public static async getWikiPages() {
+    const pages = await WikiRepository.GetPages();
+    return pages;
+  }
+
+  public static async getWikiConnections() {
+    const connection = await WikiRepository.GetConnections();
+    return connection;
   }
 }

@@ -4,16 +4,15 @@ import { Connection, Page } from "../services/wiki-service";
 import { db } from "../database";
 
 export class WikiRepository {
-  public static async GetWiki() {
+  public static async GetPages() {
     const pages = await db.select().from(page);
+
+    return pages;
+  }
+  public static async GetConnections() {
     const connections = await db.select().from(connection);
 
-    console.log({ pages, connections });
-
-    return {
-      pages: pages,
-      connection: connections,
-    };
+    return connections;
   }
 
   public static async ListPagebySimilarity(embedding: number[]) {

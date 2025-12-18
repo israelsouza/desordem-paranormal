@@ -1,7 +1,5 @@
 import { FeatureExtractionPipeline, pipeline } from "@huggingface/transformers";
 import { WikiRepository } from "../repository/wiki-repository";
-import { cosineDistance, gt, sql } from "drizzle-orm";
-import { page as pageSchema } from "../database/schemas";
 
 export class SemanticSearchService {
   private static featureExtractionPipeline: FeatureExtractionPipeline;
@@ -9,7 +7,7 @@ export class SemanticSearchService {
   public static async loadFeatureExtraction() {
     const extractor = await pipeline(
       "feature-extraction",
-      "intfloat/multilingual-e5-base"
+      "intfloat/multilingual-e5-small"
     );
 
     console.log("pipelone loaded");
@@ -27,11 +25,6 @@ export class SemanticSearchService {
     );
 
     return Array.from(response.data);
-  }
-
-  public static async getPages() {
-    const wiki = await WikiRepository.GetWiki();
-    return wiki.pages;
   }
 
   public static async compareEmbedding(searchQuery: string) {
