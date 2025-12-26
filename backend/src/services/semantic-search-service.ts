@@ -7,7 +7,10 @@ export class SemanticSearchService {
   public static async loadFeatureExtraction() {
     const extractor = await pipeline(
       "feature-extraction",
-      "intfloat/multilingual-e5-small"
+      "Xenova/multilingual-e5-small",
+      {
+        dtype: "fp16",
+      }
     );
 
     console.log("pipelone loaded");
