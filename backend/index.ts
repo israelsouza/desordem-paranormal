@@ -11,10 +11,10 @@ async function main() {
   app.use(express.json());
   app.use(appRoutes);
 
-  await SemanticSearchService.loadFeatureExtraction();
-
   app.listen(port, () => {
     console.log(`a porta ${port} ta abrida !`);
   });
+
+  SemanticSearchService.loadFeatureExtraction();
 }
 main();
