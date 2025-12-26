@@ -10,8 +10,8 @@
     "test": "jest",
     "dev": "tsx watch index.ts",
     "update": "npx drizzle-kit push",
-    "start": "node dist/index.cjs",
-    "build": "npx tsup index.ts"
+    "start": "node dist/index.js",
+    "build": "npx tsup --format esm index.ts"
   },
   "dependencies": {
     "@huggingface/transformers": "^3.8.1",

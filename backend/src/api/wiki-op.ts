@@ -26,17 +26,22 @@ export class WikiOp {
     }
   }
 
-  public static async getWikiText(pageName: string): Promise<string | undefined> {
-    const response = await axios.get(`https://ordemparanormal.fandom.com/api.php`, {
-      params: {
-        action: "query",
-        prop: "revisions",
-        titles: pageName,
-        rvslots: "*",
-        rvprop: "content",
-        format: "json"
+  public static async getWikiText(
+    pageName: string
+  ): Promise<string | undefined> {
+    const response = await axios.get(
+      `https://ordemparanormal.fandom.com/api.php`,
+      {
+        params: {
+          action: "query",
+          prop: "revisions",
+          titles: pageName,
+          rvslots: "*",
+          rvprop: "content",
+          format: "json",
+        },
       }
-    });
+    );
 
     const pages = response.data.query.pages;
     const firstPage: any = Object.values(pages)[0];
