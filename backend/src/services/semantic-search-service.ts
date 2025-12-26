@@ -7,7 +7,7 @@ export class SemanticSearchService {
   public static async loadFeatureExtraction() {
     const extractor = await pipeline(
       "feature-extraction",
-      "intfloat/multilingual-e5-base"
+      "intfloat/multilingual-e5-small"
     );
 
     console.log("pipelone loaded");
