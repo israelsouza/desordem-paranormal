@@ -5,7 +5,14 @@ import { db } from "../database";
 
 export class WikiRepository {
   public static async GetPages() {
-    const pages = await db.select().from(page);
+    const pages = await db
+      .select({
+        id: page.id,
+        name: page.name,
+        link: page.link,
+        categories: page.categories,
+      })
+      .from(page);
 
     return pages;
   }
