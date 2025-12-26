@@ -7,7 +7,7 @@ export class SemanticSearchService {
   public static async loadFeatureExtraction() {
     const extractor = await pipeline(
       "feature-extraction",
-      "Xenova/multilingual-e5-small",
+      "Xenova/multilingual-e5-small/resolve/main/onnx/model_int8.onnx",
       {
         dtype: "fp16",
       }
