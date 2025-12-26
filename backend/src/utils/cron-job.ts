@@ -7,5 +7,8 @@ new CronJob(
     WikiService.UpdatePageConnections();
   },
   null,
+  true,
+  undefined,
+  undefined,
   true
 );
