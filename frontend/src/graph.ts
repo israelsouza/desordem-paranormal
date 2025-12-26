@@ -1,13 +1,31 @@
 import * as d3 from "d3";
 import { dataset, type Link, type Node } from "./dataset";
+import { useEffect, useRef } from "react";
 
-export function Graph() {
-  const svg = d3 //criando o svg que vai agrupar tudo
-    .create("svg")
-    .attr("height", "100hv")
-    .attr("width", "100wh")
-    .attr("viewBox", [0, 0, "100wv", "100hv"]);
+export function useGraph() {
+  const svgRef = useRef<SVGSVGElement>(null);
 
+  useEffect(() => {
+    if (svgRef.current) {
+      Graph(svgRef.current);
+    }
+  }, []);
+
+  return svgRef;
+}
+
+export function Graph(SVGElement: SVGSVGElement) {
+  const svg = d3
+    .select<SVGSVGElement, undefined>(SVGElement) //selecionando o svg
+    .attr("height", "100dvh")
+    .attr("width", "100dvw")
+    .attr("viewBox", [0, 0, "100dvw", "100dvh"]);
+
+  if (svg.attr("data-graph")) {
+    return;
+  }
+
+  svg.attr("data-graph", true);
   const g = svg.append("g").attr("cursor", "grab");
 
   const simulation = d3 //criando a simulação
@@ -78,5 +96,5 @@ export function Graph() {
     g.attr("transform", event.transform.toString());
   }
 
-  document.body.appendChild(svg.node()!); //ultima linha | add o svg no html
+  return document.body.appendChild(svg.node()!); //ultima linha | add o svg no html
 }

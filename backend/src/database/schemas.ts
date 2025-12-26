@@ -11,7 +11,7 @@ export const page = pgTable("page", {
   id: integer().primaryKey(),
   name: text().notNull(),
   link: text().notNull(),
-  embedding: vector({ dimensions: 768 }),
+  embedding: vector({ dimensions: 384 }),
   categories: jsonb("categories").$type<string[]>(),
 });
 
