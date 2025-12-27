@@ -14,7 +14,6 @@ async function main() {
   app.listen(port, () => {
     console.log(`a porta ${port} ta abrida !`);
   });
-
   SemanticSearchService.loadFeatureExtraction();
 }
 main();

@@ -2,10 +2,10 @@ import { FeatureExtractionPipeline, pipeline } from "@huggingface/transformers";
 import { WikiRepository } from "../repository/wiki-repository";
 
 export class SemanticSearchService {
-  private static featureExtractionPipeline: FeatureExtractionPipeline;
+  private static featureExtractionPipeline: Promise<FeatureExtractionPipeline>;
 
-  public static async loadFeatureExtraction() {
-    const extractor = await pipeline(
+  public static loadFeatureExtraction() {
+    const extractor = pipeline(
       "feature-extraction",
       "Xenova/multilingual-e5-small",
       {
@@ -19,13 +19,12 @@ export class SemanticSearchService {
   }
 
   public static async getEmbedding(text: string, prefix: string) {
-    const response = await this.featureExtractionPipeline(
-      `${prefix}: ${text}`,
-      {
-        pooling: "mean",
-        normalize: true,
-      }
-    );
+    const pipeline = await this.featureExtractionPipeline;
+
+    const response = await pipeline(`${prefix}: ${text}`, {
+      pooling: "mean",
+      normalize: true,
+    });
 
     return Array.from(response.data);
   }
