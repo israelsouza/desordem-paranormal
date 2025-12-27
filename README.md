@@ -29,7 +29,6 @@ Projeto feito para estudo, com o objetivo de visualizar como a história de [Ord
 | ---------- | --------------------------- |
 | Typescript | Linguagem principal         |
 | React      | Biblioteca Javascript       |
-| Typescript | Linguagem principal         |
 | D3.js      | Simula física no javascript |
 
 ---
@@ -40,7 +39,9 @@ Projeto feito para estudo, com o objetivo de visualizar como a história de [Ord
 
 #### Rotas
 
-caminho: backend\src\routes\routes.ts
+```
+backend\src\routes\routes.ts
+```
 
 | Metodo | Endpoint | Descrição                                                              |
 | ------ | -------- | ---------------------------------------------------------------------- |
@@ -49,7 +50,9 @@ caminho: backend\src\routes\routes.ts
 
 #### Controller
 
-caminho: backend\src\controller\get-wiki-controller.ts
+```
+backend\src\controller\get-wiki-controller.ts
+```
 
 | Função     | Descrição                                                                                             |
 | ---------- | ----------------------------------------------------------------------------------------------------- |
@@ -58,7 +61,9 @@ caminho: backend\src\controller\get-wiki-controller.ts
 
 #### Wiki Service
 
-caminho: backend\src\services\wiki-service.ts
+```
+backend\src\services\wiki-service.ts
+```
 
 ##### Função GetPages
 
@@ -75,7 +80,9 @@ caminho: backend\src\services\wiki-service.ts
 
 #### WikiDataManipulationService
 
-caminho: backend\src\services\wiki-data-manipulation-service.ts
+```
+backend\src\services\wiki-data-manipulation-service.ts
+```
 
 ##### Função GetPages
 
